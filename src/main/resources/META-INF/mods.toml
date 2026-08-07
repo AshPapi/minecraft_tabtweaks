@@ -1,0 +1,26 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="tabtweaks"
+version="1.0.0"
+displayName="Tab Tweaks"
+authors="POB"
+description='''
+Меняет порядок и иконки вкладок креатива по конфигу config/tabtweaks.toml.
+'''
+
+[[dependencies.tabtweaks]]
+    modId="forge"
+    mandatory=true
+    versionRange="[47,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.tabtweaks]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.20.1,1.21)"
+    ordering="NONE"
+    side="BOTH"
