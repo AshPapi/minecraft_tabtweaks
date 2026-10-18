@@ -1,6 +1,7 @@
 package com.pob.tabtweaks;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -21,6 +23,8 @@ public final class TabTweaks {
     private static boolean fieldResolved;
     private static Field iconField;
     private static boolean iconFieldResolved;
+    private static Field nameField;
+    private static boolean nameFieldResolved;
 
     private TabTweaks() {
     }
@@ -41,6 +45,7 @@ public final class TabTweaks {
         }
 
         applyIcons(byId);
+        applyNames(byId);
         reorder(tabs, rules, byId);
     }
 
@@ -61,6 +66,45 @@ public final class TabTweaks {
                 continue;
             }
             setIcon(tab, new ItemStack(item));
+        }
+    }
+
+    private static void applyNames(Map<String, TabRule> byId) {
+        for (TabRule rule : byId.values()) {
+            if (rule.name == null || rule.name.isBlank()) {
+                continue;
+            }
+            CreativeModeTab tab = findTab(rule.id);
+            if (tab == null) {
+                TabTweaksMod.LOGGER.warn("Вкладка {} не найдена - название не заменено", rule.id);
+                continue;
+            }
+            setName(tab, Component.literal(rule.name));
+        }
+    }
+
+    private static void setName(CreativeModeTab tab, Component name) {
+        if (!nameFieldResolved) {
+            nameFieldResolved = true;
+            for (Field field : CreativeModeTab.class.getDeclaredFields()) {
+                if (field.getType() == Component.class && !Modifier.isStatic(field.getModifiers())) {
+                    field.setAccessible(true);
+                    nameField = field;
+                    break;
+                }
+            }
+            if (nameField == null) {
+                TabTweaksMod.LOGGER.error("В CreativeModeTab нет поля типа Component - "
+                        + "названия менять не получится");
+            }
+        }
+        if (nameField == null) {
+            return;
+        }
+        try {
+            nameField.set(tab, name);
+        } catch (ReflectiveOperationException e) {
+            TabTweaksMod.LOGGER.warn("Не удалось заменить название вкладки {}", nameOf(tab), e);
         }
     }
 

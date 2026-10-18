@@ -13,13 +13,17 @@ public final class TabRule {
     public final int page;
     public final int slot;
     public final boolean hidden;
+    @Nullable
+    public final String name;
 
-    public TabRule(String id, @Nullable String icon, int page, int slot, boolean hidden) {
+    public TabRule(String id, @Nullable String icon, int page, int slot, boolean hidden,
+            @Nullable String name) {
         this.id = id;
         this.icon = icon;
         this.page = page;
         this.slot = slot;
         this.hidden = hidden;
+        this.name = name;
     }
 
     public boolean movesTab() {
@@ -34,6 +38,7 @@ public final class TabRule {
     @Override
     public String toString() {
         return "TabRule[" + this.id + (this.hidden ? " hidden" : "")
+                + (this.name != null ? " name=" + this.name : "")
                 + (this.icon != null ? " icon=" + this.icon : "")
                 + (this.movesTab() ? " page=" + this.page + " slot=" + this.slot : "") + "]";
     }

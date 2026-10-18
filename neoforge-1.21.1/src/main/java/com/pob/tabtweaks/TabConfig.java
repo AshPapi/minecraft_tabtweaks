@@ -55,7 +55,8 @@ public final class TabConfig {
                         entry.get("icon"),
                         readInt(entry, "page"),
                         readInt(entry, "slot"),
-                        Boolean.TRUE.equals(entry.get("hidden"))));
+                        Boolean.TRUE.equals(entry.get("hidden")),
+                        entry.get("name")));
             }
         } catch (RuntimeException e) {
             TabTweaksMod.LOGGER.error("Не удалось прочитать {} — правки вкладок не применены", FILE_NAME, e);
